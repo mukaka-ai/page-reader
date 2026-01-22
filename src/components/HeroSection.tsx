@@ -1,96 +1,102 @@
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ChevronRight, Play } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import heroImage from "@/assets/new-taekwondo-hero.jpg";
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[80vh] flex items-center hero-gradient overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Hero Background */}
+      <div className="absolute inset-0">
+        <img
+          src={heroImage}
+          alt="Taekwondo training session"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
+      </div>
+
       {/* Decorative Elements */}
-      <div className="absolute inset-0 bg-[url('/placeholder.svg')] opacity-5" />
-      
-      <div className="container mx-auto px-4 py-20 relative z-10">
+      <div className="absolute top-20 left-10 w-32 h-32 border border-accent/20 rounded-full animate-pulse" />
+      <div className="absolute bottom-20 right-10 w-24 h-24 border border-accent/30 rounded-full animate-pulse delay-1000" />
+
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 py-20">
         <div className="max-w-4xl mx-auto text-center text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full mb-8 border border-white/20"
-          >
-            <span className="text-sm font-medium">🥋 Established 2009</span>
-          </motion.div>
+          {/* Badge */}
+          <Badge className="mb-6 px-4 py-2 text-sm bg-accent/20 text-accent border-accent/30 backdrop-blur-sm">
+            🥋 Nairobi Taekwondo Association
+          </Badge>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
-          >
-            Master the Art of{" "}
-            <span className="text-accent">Taekwondo</span>
-          </motion.h1>
+          {/* Heading */}
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+            Strength • Discipline • Respect
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-xl md:text-2xl text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed"
-          >
-            Join Nairobi's premier martial arts academy. Build confidence, discipline, 
-            and strength with world-class instruction for all ages.
-          </motion.p>
+          {/* Subheading */}
+          <p className="text-lg md:text-xl text-white/80 mb-10 max-w-2xl mx-auto leading-relaxed">
+            Join Nairobi's most respected Taekwondo association. Master the art of self-defense,
+            build unshakeable discipline, and become part of a community dedicated to excellence.
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
-          >
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            {/* Events & Announcements Button */}
             <Button
               asChild
               size="lg"
               className="bg-accent hover:bg-accent/90 text-accent-foreground text-lg px-8 py-6 rounded-full"
             >
-              <Link to="/join">
-                Start Training
-                <ChevronRight className="ml-2 h-5 w-5" />
+              <Link to="/events">
+                📰 Events & Announcements
               </Link>
             </Button>
+
             <Button
               asChild
               size="lg"
               variant="outline"
               className="border-white/30 text-white hover:bg-white/10 text-lg px-8 py-6 rounded-full"
             >
-              <Link to="/gallery">
-                <Play className="mr-2 h-5 w-5" />
-                Watch Videos
+              <Link to="/classes/adults">
+                See Classes
               </Link>
             </Button>
-          </motion.div>
 
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="grid grid-cols-3 gap-8 mt-16 max-w-2xl mx-auto"
-          >
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-accent">15+</div>
-              <div className="text-sm text-white/70">Years Experience</div>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-white/30 text-white hover:bg-white/10 text-lg px-8 py-6 rounded-full"
+            >
+              <Link to="/coaches">
+                Meet Coaches
+              </Link>
+            </Button>
+          </div>
+
+          {/* Stats Section */}
+          <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
+            <div className="text-center p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
+              <p className="text-3xl md:text-4xl font-bold text-accent">500+</p>
+              <p className="text-sm text-white/70">Active Members</p>
             </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-accent">500+</div>
-              <div className="text-sm text-white/70">Students Trained</div>
+
+            <div className="text-center p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
+              <p className="text-3xl md:text-4xl font-bold text-accent">25+</p>
+              <p className="text-sm text-white/70">Expert Coaches</p>
             </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-accent">22+</div>
-              <div className="text-sm text-white/70">Partner Clubs</div>
+
+            <div className="text-center p-4 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10">
+              <p className="text-3xl md:text-4xl font-bold text-accent">15+</p>
+              <p className="text-sm text-white/70">Years Experience</p>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
+
+      {/* Bottom Gradient */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
     </section>
   );
 }

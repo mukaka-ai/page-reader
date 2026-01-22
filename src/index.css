@@ -31,9 +31,9 @@ All colors MUST be HSL.
     --muted: 0 0% 96%;
     --muted-foreground: 0 0% 40%;
 
-    /* Gold Accent */
-    --accent: 51 100% 50%;
-    --accent-foreground: 0 0% 0%;
+    /* Red Accent (matching primary for uniformity) */
+    --accent: 356 79% 57%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
@@ -46,12 +46,12 @@ All colors MUST be HSL.
 
     /* Custom Taekwondo Gradients */
     --gradient-hero: linear-gradient(135deg, hsl(356, 79%, 57%), hsl(0, 0%, 0%));
-    --gradient-accent: linear-gradient(90deg, hsl(51, 100%, 50%), hsl(356, 79%, 57%));
+    --gradient-accent: linear-gradient(90deg, hsl(356, 79%, 57%), hsl(356, 60%, 45%));
     --gradient-card: linear-gradient(145deg, hsl(0, 0%, 100%), hsl(0, 0%, 96%));
 
     /* Shadows with brand colors */
     --shadow-red: 0 10px 30px -5px hsl(356, 79%, 57%, 0.2);
-    --shadow-gold: 0 5px 20px -5px hsl(51, 100%, 50%, 0.3);
+    --shadow-accent: 0 5px 20px -5px hsl(356, 79%, 57%, 0.3);
     --shadow-elegant: 0 8px 25px -5px hsl(0, 0%, 0%, 0.15);
 
     /* Animation Variables */
@@ -91,9 +91,9 @@ All colors MUST be HSL.
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 70%;
 
-    /* Gold Accent in Dark Mode */
-    --accent: 51 100% 50%;
-    --accent-foreground: 0 0% 0%;
+    /* Red Accent in Dark Mode (matching primary) */
+    --accent: 356 79% 57%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
@@ -140,8 +140,8 @@ All colors MUST be HSL.
     box-shadow: var(--shadow-red);
   }
   
-  .shadow-gold {
-    box-shadow: var(--shadow-gold);
+  .shadow-accent {
+    box-shadow: var(--shadow-accent);
   }
   
   .shadow-elegant {
@@ -162,7 +162,7 @@ All colors MUST be HSL.
   }
   
   .hover-glow {
-    @apply transition-smooth hover:shadow-gold;
+    @apply transition-smooth hover:shadow-accent;
   }
   
   .belt-rank {
@@ -177,7 +177,7 @@ All colors MUST be HSL.
     @apply bg-primary text-primary-foreground;
   }
   
-  .belt-gold {
+  .belt-accent {
     @apply bg-accent text-accent-foreground;
   }
 }

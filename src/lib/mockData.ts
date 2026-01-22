@@ -25,6 +25,15 @@ export interface GalleryImage {
   category: string;
 }
 
+export interface GalleryVideo {
+  id: string;
+  url: string;
+  thumbnail: string;
+  title: string;
+  category: string;
+  duration: string;
+}
+
 export const mockEvents: Event[] = [
   {
     id: "1",
@@ -121,5 +130,40 @@ export const mockGalleryImages: GalleryImage[] = [
     url: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800",
     caption: "Team photo",
     category: "events"
+  }
+];
+
+export const mockGalleryVideos: GalleryVideo[] = [
+  {
+    id: "v1",
+    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    thumbnail: "https://images.unsplash.com/photo-1555597673-b21d5c935865?w=800",
+    title: "Sparring Techniques Tutorial",
+    category: "training",
+    duration: "3:45"
+  },
+  {
+    id: "v2",
+    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    thumbnail: "https://images.unsplash.com/photo-1564415315949-7a0c4c73aab4?w=800",
+    title: "National Championship Highlights",
+    category: "competition",
+    duration: "5:20"
+  },
+  {
+    id: "v3",
+    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    thumbnail: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800",
+    title: "Belt Grading Ceremony",
+    category: "events",
+    duration: "2:15"
+  },
+  {
+    id: "v4",
+    url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    thumbnail: "https://images.unsplash.com/photo-1599058917765-a780eda07a3e?w=800",
+    title: "Kids Class Action",
+    category: "training",
+    duration: "4:00"
   }
 ];

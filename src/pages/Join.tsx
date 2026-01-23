@@ -10,6 +10,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Users, Trophy, Target } from "lucide-react";
 import { motion } from "framer-motion";
+import { studentsService } from "@/lib/supabase-services";
 
 const Join = () => {
   const { toast } = useToast();
@@ -41,8 +42,18 @@ const Join = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      const { error } = await studentsService.register({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        age: parseInt(formData.age),
+        class: formData.class as 'kids' | 'adults' | 'private',
+        message: formData.message || null,
+      });
+
+      if (error) throw error;
+
       toast({
         title: "Registration Submitted!",
         description: "We'll contact you soon to complete your registration.",
@@ -56,8 +67,15 @@ const Join = () => {
         class: "",
         message: "",
       });
+    } catch (error: any) {
+      toast({
+        title: "Registration Failed",
+        description: error.message || "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   const benefits = [

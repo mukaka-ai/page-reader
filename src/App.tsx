@@ -19,6 +19,13 @@ import Join from "./pages/Join";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
+// Admin pages
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminCoaches from "./pages/admin/AdminCoaches";
+import AdminEvents from "./pages/admin/AdminEvents";
+import AdminStudents from "./pages/admin/AdminStudents";
+import AdminMessages from "./pages/admin/AdminMessages";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -41,6 +48,12 @@ const App = () => (
               <Route path="/events" element={<Events />} />
               <Route path="/join" element={<Join />} />
               <Route path="/auth" element={<Auth />} />
+              {/* Admin Routes */}
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/coaches" element={<AdminCoaches />} />
+              <Route path="/admin/events" element={<AdminEvents />} />
+              <Route path="/admin/students" element={<AdminStudents />} />
+              <Route path="/admin/messages" element={<AdminMessages />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

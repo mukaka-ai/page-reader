@@ -18,17 +18,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isInitializing, setIsInitializing] = useState(true);
+  const [isRoleLoading, setIsRoleLoading] = useState(false);
+
+  // Exposed loading flag: includes both auth init + admin role resolution.
+  const isLoading = isInitializing || isRoleLoading;
 
   const checkAdminRole = async (userId: string) => {
-    const { data } = await supabase
+    // Use maybeSingle() to avoid errors when the user has no admin role.
+    const { data, error } = await supabase
       .from('user_roles')
       .select('role')
       .eq('user_id', userId)
       .eq('role', 'admin')
-      .single();
-    
-    setIsAdmin(!!data);
+      .maybeSingle();
+
+    if (error) return false;
+    return !!data;
   };
 
   useEffect(() => {
@@ -37,17 +43,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        
-        // Defer admin check with setTimeout to avoid deadlock
-        if (session?.user) {
-          setTimeout(() => {
-            checkAdminRole(session.user.id);
-          }, 0);
-        } else {
+
+        // Don't query roles inside onAuthStateChange (can deadlock). We resolve roles in a separate effect.
+        if (!session?.user) {
           setIsAdmin(false);
+          setIsRoleLoading(false);
         }
-        
-        setIsLoading(false);
+
+        setIsInitializing(false);
       }
     );
 
@@ -55,16 +58,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        checkAdminRole(session.user.id);
+
+      if (!session?.user) {
+        setIsAdmin(false);
+        setIsRoleLoading(false);
       }
-      
-      setIsLoading(false);
+
+      setIsInitializing(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Resolve admin role whenever the authenticated user changes.
+  useEffect(() => {
+    if (!user?.id) return;
+
+    let cancelled = false;
+    setIsRoleLoading(true);
+
+    (async () => {
+      const admin = await checkAdminRole(user.id);
+      if (cancelled) return;
+      setIsAdmin(admin);
+      setIsRoleLoading(false);
+    })().catch(() => {
+      if (cancelled) return;
+      setIsAdmin(false);
+      setIsRoleLoading(false);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.id]);
 
   const signUp = async (email: string, password: string, fullName?: string) => {
     const redirectUrl = `${window.location.origin}/`;
@@ -90,6 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = async () => {
     await supabase.auth.signOut();
     setIsAdmin(false);
+    setIsRoleLoading(false);
   };
 
   return (

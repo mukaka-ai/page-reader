@@ -2,6 +2,7 @@ import { Layout } from "@/components/Layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Target, Eye, Heart, Award } from "lucide-react"
+import { BeltRanks } from "@/components/BeltRanks"
 
 const About = () => {
   const clubs = [
@@ -186,6 +187,9 @@ const About = () => {
           </div>
         </div>
       </section>
+
+      {/* Belt Ranking System */}
+      <BeltRanks />
 
       {/* Achievements */}
       <section className="py-20 bg-muted/30">

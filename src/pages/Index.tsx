@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight, Calendar, Users, Trophy, Star } from "lucide-react";
 import { motion } from "framer-motion";
+import { SEOHead } from "@/components/SEOHead";
 
 const Index = () => {
   const upcomingEvents = mockEvents.slice(0, 3);
@@ -14,6 +15,10 @@ const Index = () => {
 
   return (
     <Layout>
+      <SEOHead 
+        title="Nairobi Taekwondo Association" 
+        description="Join Nairobi's premier Taekwondo club. Expert coaching for all ages and skill levels. Build discipline, fitness, and confidence through martial arts training."
+      />
       <HeroSection />
 
       {/* Quick Stats Section */}

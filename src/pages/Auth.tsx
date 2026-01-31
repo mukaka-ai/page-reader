@@ -9,9 +9,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Mail, Lock, User, Shield } from "lucide-react";
+import { SEOHead } from "@/components/SEOHead";
 
 const Auth = () => {
-  const { user, isLoading, signIn, signUp } = useAuth();
+  const { user, isAdmin, isLoading, signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -24,12 +25,16 @@ const Auth = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect if already logged in
+  // Only redirect after a *successful* sign-in (not just because user is already authenticated).
+  const [redirectAfterSignIn, setRedirectAfterSignIn] = useState(false);
+
   useEffect(() => {
-    if (user && !isLoading) {
-      navigate("/");
-    }
-  }, [user, isLoading, navigate]);
+    if (!redirectAfterSignIn) return;
+    if (!user || isLoading) return;
+
+    navigate(isAdmin ? "/admin" : "/", { replace: true });
+    setRedirectAfterSignIn(false);
+  }, [redirectAfterSignIn, user, isLoading, isAdmin, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +70,7 @@ const Auth = () => {
             title: "Welcome back!",
             description: "You have successfully signed in.",
           });
-          navigate("/");
+          setRedirectAfterSignIn(true);
         }
       }
     } catch (error) {
@@ -91,6 +96,10 @@ const Auth = () => {
 
   return (
     <Layout>
+      <SEOHead 
+        title={isSignUp ? "Create Account" : "Sign In"} 
+        description="Sign in to your Nairobi Taekwondo Association account or create a new one."
+      />
       <section className="py-20 min-h-[80vh] flex items-center justify-center relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 -z-10">

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -20,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [isRoleLoading, setIsRoleLoading] = useState(false);
+  const lastRoleResolvedUserIdRef = useRef<string | null>(null);
 
   // Exposed loading flag: includes both auth init + admin role resolution.
   const isLoading = isInitializing || isRoleLoading;
@@ -41,13 +42,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        const nextUserId = session?.user?.id ?? null;
+
         setSession(session);
         setUser(session?.user ?? null);
 
         // Don't query roles inside onAuthStateChange (can deadlock). We resolve roles in a separate effect.
-        if (!session?.user) {
+        if (!nextUserId) {
+          lastRoleResolvedUserIdRef.current = null;
           setIsAdmin(false);
           setIsRoleLoading(false);
+        } else if (lastRoleResolvedUserIdRef.current !== nextUserId) {
+          // Prevent a one-render race where user is set but role isn't resolved yet.
+          setIsRoleLoading(true);
+          lastRoleResolvedUserIdRef.current = nextUserId;
         }
 
         setIsInitializing(false);
@@ -56,12 +64,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      const nextUserId = session?.user?.id ?? null;
+
       setSession(session);
       setUser(session?.user ?? null);
 
-      if (!session?.user) {
+      if (!nextUserId) {
+        lastRoleResolvedUserIdRef.current = null;
         setIsAdmin(false);
         setIsRoleLoading(false);
+      } else if (lastRoleResolvedUserIdRef.current !== nextUserId) {
+        setIsRoleLoading(true);
+        lastRoleResolvedUserIdRef.current = nextUserId;
       }
 
       setIsInitializing(false);

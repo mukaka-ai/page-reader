@@ -1,6 +1,7 @@
 import { ReactNode, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import {
   Sidebar,
   SidebarContent,
@@ -42,18 +43,28 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const { user, isAdmin, isLoading, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!isLoading && !user) {
-      navigate("/auth");
+      toast({
+        title: "Please sign in",
+        description: "You must be signed in to access the admin dashboard.",
+      });
+      navigate("/auth", { replace: true });
     }
-  }, [user, isLoading, navigate]);
+  }, [user, isLoading, navigate, toast]);
 
   useEffect(() => {
     if (!isLoading && user && !isAdmin) {
-      navigate("/");
+      toast({
+        title: "Access denied",
+        description: "Your account does not have admin access.",
+        variant: "destructive",
+      });
+      navigate("/", { replace: true });
     }
-  }, [isAdmin, isLoading, user, navigate]);
+  }, [isAdmin, isLoading, user, navigate, toast]);
 
   if (isLoading) {
     return (

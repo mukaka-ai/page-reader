@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, Mail, Lock, User, Shield } from "lucide-react";
+import { SEOHead } from "@/components/SEOHead";
 
 const Auth = () => {
   const { user, isAdmin, isLoading, signIn, signUp } = useAuth();
@@ -95,6 +96,10 @@ const Auth = () => {
 
   return (
     <Layout>
+      <SEOHead 
+        title={isSignUp ? "Create Account" : "Sign In"} 
+        description="Sign in to your Nairobi Taekwondo Association account or create a new one."
+      />
       <section className="py-20 min-h-[80vh] flex items-center justify-center relative overflow-hidden">
         {/* Background decoration */}
         <div className="absolute inset-0 -z-10">

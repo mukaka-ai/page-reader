@@ -2,13 +2,15 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, ChevronDown, Shield, LogOut, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/hooks/useAuth";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -30,8 +32,14 @@ const navigation = [
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { user, isAdmin, signOut } = useAuth();
 
   const isActive = (href: string) => location.pathname === href;
+
+  const handleSignOut = async () => {
+    await signOut();
+    setMobileMenuOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -72,9 +80,46 @@ export function Header() {
               </Link>
             )
           )}
-          <Button asChild size="sm">
-            <Link to="/join">Join Now</Link>
-          </Button>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                    <span className="text-xs font-bold text-primary">
+                      {user.email?.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                {isAdmin && (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="flex items-center gap-2">
+                        <Shield className="w-4 h-4" />
+                        Admin Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
+                <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button asChild variant="ghost" size="sm">
+                <Link to="/auth">Sign In</Link>
+              </Button>
+              <Button asChild size="sm">
+                <Link to="/join">Join Now</Link>
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -121,11 +166,58 @@ export function Header() {
                   </Link>
                 )
               )}
-              <Button asChild className="mt-4">
-                <Link to="/join" onClick={() => setMobileMenuOpen(false)}>
-                  Join Now
-                </Link>
-              </Button>
+
+              {/* Mobile Auth Section */}
+              <div className="pt-4 mt-4 border-t border-border space-y-3">
+                {user ? (
+                  <>
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-sm font-bold text-primary">
+                          {user.email?.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground truncate">
+                          {user.user_metadata?.full_name || "User"}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {user.email}
+                        </p>
+                      </div>
+                    </div>
+                    {isAdmin && (
+                      <Button asChild variant="outline" className="w-full justify-start gap-2">
+                        <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
+                          <Shield className="w-4 h-4" />
+                          Admin Dashboard
+                        </Link>
+                      </Button>
+                    )}
+                    <Button
+                      variant="destructive"
+                      className="w-full justify-start gap-2"
+                      onClick={handleSignOut}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button asChild variant="outline" className="w-full">
+                      <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                        Sign In
+                      </Link>
+                    </Button>
+                    <Button asChild className="w-full">
+                      <Link to="/join" onClick={() => setMobileMenuOpen(false)}>
+                        Join Now
+                      </Link>
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
           </SheetContent>
         </Sheet>

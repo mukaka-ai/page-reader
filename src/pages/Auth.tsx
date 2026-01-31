@@ -11,7 +11,7 @@ import { motion } from "framer-motion";
 import { Eye, EyeOff, Mail, Lock, User, Shield } from "lucide-react";
 
 const Auth = () => {
-  const { user, isLoading, signIn, signUp } = useAuth();
+  const { user, isAdmin, isLoading, signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -24,12 +24,16 @@ const Auth = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect if already logged in
+  // Only redirect after a *successful* sign-in (not just because user is already authenticated).
+  const [redirectAfterSignIn, setRedirectAfterSignIn] = useState(false);
+
   useEffect(() => {
-    if (user && !isLoading) {
-      navigate("/");
-    }
-  }, [user, isLoading, navigate]);
+    if (!redirectAfterSignIn) return;
+    if (!user || isLoading) return;
+
+    navigate(isAdmin ? "/admin" : "/", { replace: true });
+    setRedirectAfterSignIn(false);
+  }, [redirectAfterSignIn, user, isLoading, isAdmin, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,7 +69,7 @@ const Auth = () => {
             title: "Welcome back!",
             description: "You have successfully signed in.",
           });
-          navigate("/");
+          setRedirectAfterSignIn(true);
         }
       }
     } catch (error) {

@@ -31,6 +31,7 @@ const Join = lazy(() => import("./pages/Join"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminCoaches = lazy(() => import("./pages/admin/AdminCoaches"));
 const AdminEvents = lazy(() => import("./pages/admin/AdminEvents"));
+const AdminGallery = lazy(() => import("./pages/admin/AdminGallery"));
 const AdminStudents = lazy(() => import("./pages/admin/AdminStudents"));
 const AdminMessages = lazy(() => import("./pages/admin/AdminMessages"));
 const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
@@ -157,6 +158,16 @@ const App = () => (
                     <ProtectedRoute requireAdmin>
                       <SuspenseWrapper>
                         <AdminEvents />
+                      </SuspenseWrapper>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/gallery"
+                  element={
+                    <ProtectedRoute requireAdmin>
+                      <SuspenseWrapper>
+                        <AdminGallery />
                       </SuspenseWrapper>
                     </ProtectedRoute>
                   }

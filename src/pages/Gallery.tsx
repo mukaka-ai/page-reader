@@ -7,11 +7,20 @@ import { Camera, Play, Video } from "lucide-react";
 import PhotoLightbox from "@/components/PhotoLightbox";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { mockGalleryImages, mockGalleryVideos } from "@/lib/mockData";
+import { mockGalleryVideos } from "@/lib/mockData";
+import { supabase } from "@/integrations/supabase/client";
+import { SEOHead } from "@/components/SEOHead";
 
 interface MediaItem {
   id: string;
   type: "image" | "video";
+  title: string;
+  url: string;
+  category: string;
+}
+
+interface GalleryPhoto {
+  id: string;
   title: string;
   url: string;
   category: string;
@@ -26,20 +35,32 @@ export default function Gallery() {
   const [activeTab, setActiveTab] = useState<"photos" | "videos">("photos");
 
   useEffect(() => {
-    setLoading(true);
-    
-    setTimeout(() => {
-      const items: MediaItem[] = mockGalleryImages.map((img) => ({
-        id: img.id,
-        type: "image" as const,
-        title: img.caption,
-        url: img.url,
-        category: img.category,
-      }));
+    const fetchPhotos = async () => {
+      setLoading(true);
       
-      setMedia(items);
+      const { data, error } = await supabase
+        .from("gallery_photos")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching gallery photos:", error);
+        setMedia([]);
+      } else {
+        const items: MediaItem[] = (data as GalleryPhoto[]).map((photo) => ({
+          id: photo.id,
+          type: "image" as const,
+          title: photo.title,
+          url: photo.url,
+          category: photo.category,
+        }));
+        setMedia(items);
+      }
+      
       setLoading(false);
-    }, 500);
+    };
+
+    fetchPhotos();
   }, []);
 
   const categories = ["all", ...Array.from(new Set(media.map(m => m.category)))];
@@ -66,6 +87,10 @@ export default function Gallery() {
 
   return (
     <Layout>
+      <SEOHead 
+        title="Gallery"
+        description="Browse our photos and videos from training sessions, events, and tournaments at Nairobi Taekwondo Association."
+      />
       <section className="py-16 text-center bg-muted/30">
         <Badge className="bg-primary/10 text-primary border-primary/20 mb-4">
           <Camera className="w-4 h-4 mr-2" /> Media Gallery

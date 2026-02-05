@@ -3,11 +3,10 @@ import { Layout } from "@/components/Layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Camera, Play, Video } from "lucide-react";
+import { Camera, Video } from "lucide-react";
 import PhotoLightbox from "@/components/PhotoLightbox";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { mockGalleryVideos } from "@/lib/mockData";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
 
@@ -26,8 +25,16 @@ interface GalleryPhoto {
   category: string;
 }
 
+interface GalleryVideo {
+  id: string;
+  title: string;
+  url: string;
+  category: string;
+}
+
 export default function Gallery() {
-  const [media, setMedia] = useState<MediaItem[]>([]);
+  const [photos, setPhotos] = useState<MediaItem[]>([]);
+  const [videos, setVideos] = useState<GalleryVideo[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [loading, setLoading] = useState(true);
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -35,42 +42,61 @@ export default function Gallery() {
   const [activeTab, setActiveTab] = useState<"photos" | "videos">("photos");
 
   useEffect(() => {
-    const fetchPhotos = async () => {
+    const fetchGalleryData = async () => {
       setLoading(true);
       
-      const { data, error } = await supabase
+      // Fetch photos
+      const { data: photosData, error: photosError } = await supabase
         .from("gallery_photos")
         .select("*")
         .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching gallery photos:", error);
-        setMedia([]);
+      if (photosError) {
+        console.error("Error fetching gallery photos:", photosError);
+        setPhotos([]);
       } else {
-        const items: MediaItem[] = (data as GalleryPhoto[]).map((photo) => ({
+        const items: MediaItem[] = (photosData as GalleryPhoto[]).map((photo) => ({
           id: photo.id,
           type: "image" as const,
           title: photo.title,
           url: photo.url,
           category: photo.category,
         }));
-        setMedia(items);
+        setPhotos(items);
+      }
+
+      // Fetch videos
+      const { data: videosData, error: videosError } = await supabase
+        .from("gallery_videos")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (videosError) {
+        console.error("Error fetching gallery videos:", videosError);
+        setVideos([]);
+      } else {
+        setVideos(videosData as GalleryVideo[]);
       }
       
       setLoading(false);
     };
 
-    fetchPhotos();
+    fetchGalleryData();
   }, []);
 
-  const categories = ["all", ...Array.from(new Set(media.map(m => m.category)))];
-  const filteredMedia = selectedCategory === "all" 
-    ? media 
-    : media.filter(m => m.category === selectedCategory);
+  const allCategories = [
+    ...photos.map(p => p.category), 
+    ...videos.map(v => v.category)
+  ];
+  const categories = ["all", ...Array.from(new Set(allCategories))];
+  
+  const filteredPhotos = selectedCategory === "all" 
+    ? photos 
+    : photos.filter(m => m.category === selectedCategory);
 
   const filteredVideos = selectedCategory === "all"
-    ? mockGalleryVideos
-    : mockGalleryVideos.filter(v => v.category === selectedCategory);
+    ? videos
+    : videos.filter(v => v.category === selectedCategory);
 
   const openLightbox = (index: number) => {
     setCurrentMediaIndex(index);
@@ -79,9 +105,9 @@ export default function Gallery() {
 
   const navigateLightbox = (direction: "prev" | "next") => {
     if (direction === "prev") {
-      setCurrentMediaIndex((prev) => (prev > 0 ? prev - 1 : filteredMedia.length - 1));
+      setCurrentMediaIndex((prev) => (prev > 0 ? prev - 1 : filteredPhotos.length - 1));
     } else {
-      setCurrentMediaIndex((prev) => (prev < filteredMedia.length - 1 ? prev + 1 : 0));
+      setCurrentMediaIndex((prev) => (prev < filteredPhotos.length - 1 ? prev + 1 : 0));
     }
   };
 
@@ -145,7 +171,7 @@ export default function Gallery() {
                   </div>
                 ))}
               </div>
-            ) : filteredMedia.length === 0 ? (
+            ) : filteredPhotos.length === 0 ? (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -161,7 +187,7 @@ export default function Gallery() {
               </motion.div>
             ) : (
               <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {filteredMedia.map((item, index) => (
+                {filteredPhotos.map((item, index) => (
                   <motion.div
                     key={item.id}
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -229,7 +255,6 @@ export default function Gallery() {
                     <div className="aspect-video overflow-hidden relative">
                       <video
                         src={video.url}
-                        poster={video.thumbnail}
                         controls
                         preload="metadata"
                         className="w-full h-full object-cover"
@@ -240,9 +265,6 @@ export default function Gallery() {
                     <div className="p-4">
                       <div className="flex items-center justify-between">
                         <h3 className="font-semibold text-foreground">{video.title}</h3>
-                        <span className="text-sm text-muted-foreground flex items-center gap-1">
-                          <Play className="w-3 h-3" /> {video.duration}
-                        </span>
                       </div>
                       <Badge variant="outline" className="mt-2 capitalize text-primary border-primary/30">
                         {video.category}
@@ -257,7 +279,7 @@ export default function Gallery() {
       </div>
 
       <PhotoLightbox
-        media={filteredMedia}
+        media={filteredPhotos}
         currentIndex={currentMediaIndex}
         isOpen={lightboxOpen}
         onClose={() => setLightboxOpen(false)}

@@ -6,9 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Plus, Pencil, Trash2, X, Users } from "lucide-react";
+import { Plus, Pencil, Trash2, Users } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { ImageUpload } from "@/components/admin/ImageUpload";
 import {
   Dialog,
   DialogContent,
@@ -221,12 +222,12 @@ const AdminCoaches = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="image_url">Image URL</Label>
-                  <Input
-                    id="image_url"
-                    value={formData.image_url}
-                    onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                    placeholder="https://..."
+                  <Label>Coach Photo</Label>
+                  <ImageUpload
+                    currentImageUrl={formData.image_url}
+                    onImageUploaded={(url) => setFormData({ ...formData, image_url: url })}
+                    bucket="coaches"
+                    folder="photos"
                   />
                 </div>
                 <div className="space-y-2">

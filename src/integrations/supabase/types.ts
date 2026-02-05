@@ -125,6 +125,33 @@ export type Database = {
         }
         Relationships: []
       }
+      gallery_videos: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          title: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           created_at: string

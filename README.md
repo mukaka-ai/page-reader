@@ -1,73 +1,178 @@
-# Welcome to your Lovable project
+Developer: Hillary Mukaka
+Project Type: Full-stack Web Application
+Status: Active / Production-ready
 
-## Project info
+📌 Overview
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+This project is a complete website for a Taekwondo academy, designed to serve students, parents, and administrators.
 
-## How can I edit this code?
+It includes:
 
-There are several ways of editing your application.
+A public-facing website for visitors
 
-**Use Lovable**
+A secure admin dashboard for content management
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Backend services for data storage, authentication, and image uploads
 
-Changes made via Lovable will be committed automatically to this repo.
+The goal was to create a professional, easy-to-manage platform that allows non-technical admins to update content without touching code.
 
-**Use your preferred IDE**
+✨ Features
+🌍 Public Website
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Responsive landing page
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+About the academy
 
-Follow these steps:
+Coaches section
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Events & news updates
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Gallery
 
-# Step 3: Install the necessary dependencies.
-npm i
+Contact form
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+Student registration (Join form)
+
+🔐 Admin Dashboard
+
+Secure authentication (email & password)
+
+Admin-only access control
+
+Manage coaches (add, edit, delete)
+
+Manage events (add, edit, delete)
+
+Upload and update images
+
+View student registrations
+
+Read contact form messages
+
+🖼️ Media Management
+
+Image uploads for coaches and events
+
+Public image access
+
+Admin-only upload permissions
+
+🧱 Tech Stack
+Frontend
+
+React
+
+TypeScript
+
+Vite
+
+Tailwind CSS
+
+shadcn/ui
+
+Framer Motion
+
+React Router
+
+Backend
+
+Lovable Cloud Backend
+
+Authentication
+
+Database
+
+Storage
+
+Role-based access control (RLS)
+
+Tooling
+
+Git & GitHub
+
+VS Code
+
+Chrome DevTools
+
+🔐 Security & Roles
+
+Role-based access control (Admin / Public)
+
+Public users:
+
+Can view coaches and events
+
+Can submit forms (students & contact)
+
+Admin users:
+
+Full CRUD access
+
+Image uploads
+
+Dashboard access
+
+Row Level Security (RLS) enabled on all tables
+
+📂 Project Structure (Simplified)
+src/
+ ├─ components/
+ ├─ pages/
+ │   ├─ Home
+ │   ├─ Auth
+ │   ├─ Admin
+ │   ├─ Coaches
+ │   ├─ Events
+ │   └─ Gallery
+ ├─ hooks/
+ ├─ lib/
+ └─ styles/
+
+🚀 Getting Started (Local Development)
+# Clone the repository
+git clone https://github.com/mukaka-ai/page-reader.git
+
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-```
 
-**Edit a file directly in GitHub**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Backend configuration is handled by Lovable Cloud and does not require manual environment setup.
 
-**Use GitHub Codespaces**
+🛠️ Admin Access
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Visit /auth to sign in
 
-## What technologies are used for this project?
+Admin users are managed through the backend role system
 
-This project is built with:
+Visit /admin to access the dashboard (admin-only)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+🎯 Project Goals
 
-## How can I deploy this project?
+Build a real-world client-ready website
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Implement secure authentication and admin roles
 
-## Can I connect a custom domain to my Lovable project?
+Enable content management without developer involvement
 
-Yes, you can!
+Prepare for deployment and long-term maintenance
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+📈 Future Improvements
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Email notifications for contact & registrations
+
+Analytics dashboard
+
+SEO optimizations
+
+Multi-language support
+
+Payment integration (memberships)
+
+👨‍💻 Author
+
+Hillary Mukaka
+Frontend & Backend Web Developer
+Passionate about building scalable, real-world solutions.

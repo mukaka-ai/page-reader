@@ -8,14 +8,17 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Mail, Lock, User, Shield, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, Shield, ArrowLeft } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { supabase } from "@/integrations/supabase/client";
 
-type AuthMode = "signin" | "signup" | "forgot-password" | "reset-password";
+type AuthMode = "signin" | "forgot-password" | "reset-password";
+
+// Only these emails can sign in
+const ADMIN_EMAILS = ["telo18429@gmail.com", "mukakahillary26@gmail.com"];
 
 const Auth = () => {
-  const { user, isAdmin, isLoading, signIn, signUp } = useAuth();
+  const { user, isAdmin, isLoading, signIn } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -24,7 +27,6 @@ const Auth = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    fullName: "",
     newPassword: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,23 +55,18 @@ const Auth = () => {
     setIsSubmitting(true);
 
     try {
-      if (mode === "signup") {
-        const { error } = await signUp(formData.email, formData.password, formData.fullName);
-        if (error) {
+      if (mode === "signin") {
+        // Check if email is an admin email
+        if (!ADMIN_EMAILS.includes(formData.email.toLowerCase())) {
           toast({
-            title: "Sign up failed",
-            description: error.message,
+            title: "Access Denied",
+            description: "Only administrators can sign in.",
             variant: "destructive",
           });
-        } else {
-          toast({
-            title: "Account created!",
-            description: "Please check your email to verify your account.",
-          });
-          setMode("signin");
-          setFormData({ email: formData.email, password: "", fullName: "", newPassword: "" });
+          setIsSubmitting(false);
+          return;
         }
-      } else if (mode === "signin") {
+
         const { error } = await signIn(formData.email, formData.password);
         if (error) {
           toast({
@@ -85,6 +82,17 @@ const Auth = () => {
           setRedirectAfterSignIn(true);
         }
       } else if (mode === "forgot-password") {
+        // Check if email is an admin email
+        if (!ADMIN_EMAILS.includes(formData.email.toLowerCase())) {
+          toast({
+            title: "Access Denied",
+            description: "Only administrators can reset their password.",
+            variant: "destructive",
+          });
+          setIsSubmitting(false);
+          return;
+        }
+
         const redirectUrl = `${window.location.origin}/auth`;
         const { error } = await supabase.auth.resetPasswordForEmail(formData.email, {
           redirectTo: redirectUrl,
@@ -118,7 +126,7 @@ const Auth = () => {
             description: "You can now sign in with your new password.",
           });
           setMode("signin");
-          setFormData({ email: "", password: "", fullName: "", newPassword: "" });
+          setFormData({ email: "", password: "", newPassword: "" });
         }
       }
     } catch (error) {
@@ -144,27 +152,23 @@ const Auth = () => {
 
   const getTitle = () => {
     switch (mode) {
-      case "signup":
-        return "Create Account";
       case "forgot-password":
         return "Reset Password";
       case "reset-password":
         return "Set New Password";
       default:
-        return "Welcome Back";
+        return "Admin Login";
     }
   };
 
   const getDescription = () => {
     switch (mode) {
-      case "signup":
-        return "Sign up to access the admin dashboard";
       case "forgot-password":
-        return "Enter your email to receive a reset link";
+        return "Enter your admin email to receive a reset link";
       case "reset-password":
         return "Choose a new password for your account";
       default:
-        return "Sign in to your admin account";
+        return "Sign in to access the admin dashboard";
     }
   };
 
@@ -172,7 +176,7 @@ const Auth = () => {
     <Layout>
       <SEOHead 
         title={getTitle()} 
-        description="Sign in to your Nairobi Taekwondo Association account or create a new one."
+        description="Admin login for Nairobi Taekwondo Association."
       />
       <section className="py-20 min-h-[80vh] flex items-center justify-center relative overflow-hidden">
         {/* Background decoration */}
@@ -206,33 +210,6 @@ const Auth = () => {
 
               <CardContent className="pt-6">
                 <form onSubmit={handleSubmit} className="space-y-5">
-                  {mode === "signup" && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="space-y-2"
-                    >
-                      <Label htmlFor="fullName" className="text-foreground font-medium">
-                        Full Name
-                      </Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="fullName"
-                          type="text"
-                          placeholder="Enter your full name"
-                          value={formData.fullName}
-                          onChange={(e) =>
-                            setFormData({ ...formData, fullName: e.target.value })
-                          }
-                          className="pl-10 h-12 bg-background border-input focus:border-primary transition-colors"
-                          required
-                        />
-                      </div>
-                    </motion.div>
-                  )}
-
                   {mode !== "reset-password" && (
                     <div className="space-y-2">
                       <Label htmlFor="email" className="text-foreground font-medium">
@@ -243,7 +220,7 @@ const Auth = () => {
                         <Input
                           id="email"
                           type="email"
-                          placeholder="Enter your email"
+                          placeholder="Enter your admin email"
                           value={formData.email}
                           onChange={(e) =>
                             setFormData({ ...formData, email: e.target.value })
@@ -255,7 +232,7 @@ const Auth = () => {
                     </div>
                   )}
 
-                  {(mode === "signin" || mode === "signup") && (
+                  {mode === "signin" && (
                     <div className="space-y-2">
                       <Label htmlFor="password" className="text-foreground font-medium">
                         Password
@@ -344,14 +321,12 @@ const Auth = () => {
                     {isSubmitting ? (
                       <div className="flex items-center gap-2">
                         <div className="animate-spin rounded-full h-4 w-4 border-2 border-primary-foreground border-t-transparent" />
-                        {mode === "signup" && "Creating Account..."}
                         {mode === "signin" && "Signing In..."}
                         {mode === "forgot-password" && "Sending..."}
                         {mode === "reset-password" && "Updating..."}
                       </div>
                     ) : (
                       <>
-                        {mode === "signup" && "Create Account"}
                         {mode === "signin" && "Sign In"}
                         {mode === "forgot-password" && "Send Reset Link"}
                         {mode === "reset-password" && "Update Password"}
@@ -361,42 +336,12 @@ const Auth = () => {
                 </form>
 
                 <div className="mt-6 text-center">
-                  {mode === "signin" && (
-                    <>
-                      <p className="text-muted-foreground">Don't have an account?</p>
-                      <Button
-                        variant="link"
-                        onClick={() => {
-                          setMode("signup");
-                          setFormData({ email: "", password: "", fullName: "", newPassword: "" });
-                        }}
-                        className="text-primary font-semibold hover:text-primary/80"
-                      >
-                        Create Account
-                      </Button>
-                    </>
-                  )}
-                  {mode === "signup" && (
-                    <>
-                      <p className="text-muted-foreground">Already have an account?</p>
-                      <Button
-                        variant="link"
-                        onClick={() => {
-                          setMode("signin");
-                          setFormData({ email: "", password: "", fullName: "", newPassword: "" });
-                        }}
-                        className="text-primary font-semibold hover:text-primary/80"
-                      >
-                        Sign In
-                      </Button>
-                    </>
-                  )}
                   {(mode === "forgot-password" || mode === "reset-password") && (
                     <Button
                       variant="link"
                       onClick={() => {
                         setMode("signin");
-                        setFormData({ email: "", password: "", fullName: "", newPassword: "" });
+                        setFormData({ email: "", password: "", newPassword: "" });
                       }}
                       className="text-primary font-semibold hover:text-primary/80 gap-2"
                     >
@@ -414,7 +359,7 @@ const Auth = () => {
               transition={{ delay: 0.5 }}
               className="text-center text-sm text-muted-foreground mt-6"
             >
-              By signing in, you agree to our Terms of Service and Privacy Policy
+              This area is restricted to administrators only
             </motion.p>
           </motion.div>
         </div>

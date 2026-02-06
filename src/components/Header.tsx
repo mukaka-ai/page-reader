@@ -111,14 +111,9 @@ export function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div className="flex items-center gap-2">
-              <Button asChild variant="ghost" size="sm">
-                <Link to="/auth">Sign In</Link>
-              </Button>
-              <Button asChild size="sm">
-                <Link to="/join">Join Now</Link>
-              </Button>
-            </div>
+            <Button asChild size="sm">
+              <Link to="/join">Join Now</Link>
+            </Button>
           )}
         </div>
 
@@ -204,18 +199,11 @@ export function Header() {
                     </Button>
                   </>
                 ) : (
-                  <>
-                    <Button asChild variant="outline" className="w-full">
-                      <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
-                        Sign In
-                      </Link>
-                    </Button>
-                    <Button asChild className="w-full">
-                      <Link to="/join" onClick={() => setMobileMenuOpen(false)}>
-                        Join Now
-                      </Link>
-                    </Button>
-                  </>
+                  <Button asChild className="w-full">
+                    <Link to="/join" onClick={() => setMobileMenuOpen(false)}>
+                      Join Now
+                    </Link>
+                  </Button>
                 )}
               </div>
             </div>

@@ -32,9 +32,9 @@ import { SEOHead } from "@/components/SEOHead";
 const menuItems = [
   { title: "Dashboard", url: "/admin", icon: LayoutDashboard },
   { title: "Coaches", url: "/admin/coaches", icon: Users },
+  { title: "Students", url: "/admin/students", icon: GraduationCap },
   { title: "Events", url: "/admin/events", icon: Calendar },
   { title: "Gallery", url: "/admin/gallery", icon: Image },
-  { title: "Students", url: "/admin/students", icon: GraduationCap },
   { title: "Messages", url: "/admin/messages", icon: MessageSquare },
   { title: "Users", url: "/admin/users", icon: UserCog },
 ];

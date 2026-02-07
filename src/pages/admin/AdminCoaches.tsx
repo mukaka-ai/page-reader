@@ -39,6 +39,7 @@ interface Coach {
   image_url: string | null;
   specialization: string[] | null;
   achievements: string[] | null;
+  students: string[] | null;
 }
 
 const AdminCoaches = () => {
@@ -54,6 +55,7 @@ const AdminCoaches = () => {
     image_url: "",
     specialization: "",
     achievements: "",
+    students: "",
   });
 
   const { data: coaches, isLoading } = useQuery({
@@ -78,6 +80,7 @@ const AdminCoaches = () => {
         image_url: data.image_url || null,
         specialization: data.specialization ? data.specialization.split(",").map((s) => s.trim()) : null,
         achievements: data.achievements ? data.achievements.split(",").map((s) => s.trim()) : null,
+        students: data.students ? data.students.split(",").map((s) => s.trim()) : null,
       });
       if (error) throw error;
     },
@@ -104,6 +107,7 @@ const AdminCoaches = () => {
           image_url: data.image_url || null,
           specialization: data.specialization ? data.specialization.split(",").map((s) => s.trim()) : null,
           achievements: data.achievements ? data.achievements.split(",").map((s) => s.trim()) : null,
+          students: data.students ? data.students.split(",").map((s) => s.trim()) : null,
         })
         .eq("id", id);
       if (error) throw error;
@@ -134,7 +138,7 @@ const AdminCoaches = () => {
   });
 
   const resetForm = () => {
-    setFormData({ name: "", rank: "", bio: "", experience: "", image_url: "", specialization: "", achievements: "" });
+    setFormData({ name: "", rank: "", bio: "", experience: "", image_url: "", specialization: "", achievements: "", students: "" });
     setEditingCoach(null);
     setIsDialogOpen(false);
   };
@@ -149,6 +153,7 @@ const AdminCoaches = () => {
       image_url: coach.image_url || "",
       specialization: coach.specialization?.join(", ") || "",
       achievements: coach.achievements?.join(", ") || "",
+      students: coach.students?.join(", ") || "",
     });
     setIsDialogOpen(true);
   };
@@ -246,6 +251,15 @@ const AdminCoaches = () => {
                     value={formData.achievements}
                     onChange={(e) => setFormData({ ...formData, achievements: e.target.value })}
                     placeholder="National Champion, Certified Instructor"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="students">Notable Students (comma-separated)</Label>
+                  <Input
+                    id="students"
+                    value={formData.students}
+                    onChange={(e) => setFormData({ ...formData, students: e.target.value })}
+                    placeholder="John Doe, Jane Smith, Mike Johnson"
                   />
                 </div>
                 <div className="flex justify-end gap-3 pt-4">

@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import heroImage from "@/assets/new-taekwondo-hero.jpg";
+import heroImage from "@/assets/landing-hero.jpg";
 
 export function HeroSection() {
   return (

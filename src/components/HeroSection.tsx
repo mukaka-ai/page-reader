@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import heroImage from "@/assets/landing-hero.jpg";
+import heroImage from "@/assets/kicc-nairobi.jpg";
 
 export function HeroSection() {
   return (
@@ -10,10 +10,10 @@ export function HeroSection() {
       <div className="absolute inset-0">
         <img
           src={heroImage}
-          alt="Taekwondo training session"
-          className="w-full h-full object-cover"
+          alt="Kenyatta International Conference Centre, Nairobi"
+          className="w-full h-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />
       </div>
 
       {/* Decorative Elements */}

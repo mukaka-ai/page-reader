@@ -6,19 +6,22 @@ import heroImage from "@/assets/kicc-nairobi.jpg";
 export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Hero Background */}
+      {/* Hero Background - Full-screen KICC nighttime */}
       <div className="absolute inset-0">
         <img
           src={heroImage}
-          alt="Kenyatta International Conference Centre, Nairobi"
-          className="w-full h-full object-cover object-center"
+          alt="Kenyatta International Conference Centre illuminated at night, Nairobi"
+          className="w-full h-full object-cover object-[center_30%]"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-background" />
+        {/* Multi-layer overlay for depth and readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/40" />
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/80 to-transparent" />
       </div>
 
-      {/* Decorative Elements */}
-      <div className="absolute top-20 left-10 w-32 h-32 border border-accent/20 rounded-full animate-pulse" />
-      <div className="absolute bottom-20 right-10 w-24 h-24 border border-accent/30 rounded-full animate-pulse delay-1000" />
+      {/* Subtle decorative elements */}
+      <div className="absolute top-20 left-10 w-32 h-32 border border-accent/10 rounded-full animate-pulse" />
+      <div className="absolute bottom-32 right-10 w-24 h-24 border border-accent/15 rounded-full animate-pulse delay-1000" />
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-20">
@@ -95,8 +98,8 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* Bottom Gradient */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+      {/* Bottom edge blend */}
+      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-background to-transparent" />
     </section>
   );
 }

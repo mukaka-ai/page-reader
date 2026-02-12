@@ -17,7 +17,7 @@ export function Footer() {
               <a href="#" className="hover:text-primary transition-colors">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="hover:text-primary transition-colors">
+              <a href="https://www.instagram.com/nairobitaekwondoassociation?igsh=MjQ1bjVoZHc3ZnFk" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
               <a href="#" className="hover:text-primary transition-colors">

@@ -36,11 +36,9 @@ const AccessDenied = () => {
                   Go to Homepage
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" onClick={() => window.history.back()}>
-                <span className="cursor-pointer" onClick={() => window.history.back()}>
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Go Back
-                </span>
+              <Button variant="outline" size="lg" onClick={() => window.history.back()}>
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Go Back
               </Button>
             </div>
           </motion.div>

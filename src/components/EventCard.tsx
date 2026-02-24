@@ -3,13 +3,24 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import type { Event } from "@/lib/mockData";
 
-interface EventCardProps {
-  event: Event;
+interface EventCardEvent {
+  id: string;
+  title: string;
+  description?: string | null;
+  date: string;
+  location?: string | null;
+  type: string;
+  registration_link?: string | null;
+  registrationLink?: string;
+  image_url?: string | null;
 }
 
-const typeColors = {
+interface EventCardProps {
+  event: EventCardEvent;
+}
+
+const typeColors: Record<string, string> = {
   competition: "bg-primary text-primary-foreground",
   seminar: "bg-accent text-accent-foreground",
   workshop: "bg-secondary text-secondary-foreground",
@@ -24,11 +35,15 @@ export function EventCard({ event }: EventCardProps) {
     day: "numeric",
   });
 
+  const regLink = event.registration_link || event.registrationLink;
+
   return (
     <Card className="h-full hover-lift border-0 shadow-elegant">
       <CardHeader>
         <div className="flex items-center justify-between mb-2">
-          <Badge className={typeColors[event.type]}>{event.type}</Badge>
+          <Badge className={typeColors[event.type] || "bg-muted text-muted-foreground"}>
+            {event.type}
+          </Badge>
         </div>
         <CardTitle className="text-xl">{event.title}</CardTitle>
         <CardDescription className="flex flex-col gap-2 mt-2">
@@ -36,17 +51,21 @@ export function EventCard({ event }: EventCardProps) {
             <Calendar className="h-4 w-4" />
             {formattedDate}
           </span>
-          <span className="flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
-            {event.location}
-          </span>
+          {event.location && (
+            <span className="flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              {event.location}
+            </span>
+          )}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-muted-foreground mb-4">{event.description}</p>
-        {event.registrationLink && (
+        {event.description && (
+          <p className="text-muted-foreground mb-4">{event.description}</p>
+        )}
+        {regLink && (
           <Button asChild className="w-full">
-            <Link to={event.registrationLink}>Register Now</Link>
+            <Link to={regLink}>Register Now</Link>
           </Button>
         )}
       </CardContent>

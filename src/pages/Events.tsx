@@ -1,30 +1,30 @@
-import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Layout } from "@/components/Layout";
 import { EventCard } from "@/components/EventCard";
-import { AnnouncementCard } from "@/components/AnnouncementCard";
 import { PastEventGallery } from "@/components/PastEventGallery";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Calendar, Megaphone, Trophy } from "lucide-react";
+import { Calendar, Trophy } from "lucide-react";
 import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { mockEvents, mockAnnouncements, type Event, type Announcement } from "@/lib/mockData";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const EventsPage = () => {
-  const [upcomingEvents, setUpcomingEvents] = useState<Event[]>([]);
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: events = [], isLoading } = useQuery({
+    queryKey: ["public-events"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("events")
+        .select("*")
+        .order("date", { ascending: true });
+      if (error) throw error;
+      return data || [];
+    },
+  });
 
-  useEffect(() => {
-    setLoading(true);
-    
-    setTimeout(() => {
-      setUpcomingEvents(mockEvents);
-      setAnnouncements(mockAnnouncements);
-      setLoading(false);
-    }, 500);
-  }, []);
+  const upcomingEvents = events.filter((e) => !e.is_past);
+  const pastEvents = events.filter((e) => e.is_past);
 
   return (
     <Layout>
@@ -69,49 +69,8 @@ const EventsPage = () => {
         </div>
       </section>
 
-      {/* Announcements Section */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full mb-4">
-              <Megaphone className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-primary">Latest Updates</span>
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Announcements</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Stay informed about important updates and news
-            </p>
-          </div>
-
-          {loading ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {[...Array(3)].map((_, i) => (
-                <Card key={i} className="p-6">
-                  <Skeleton className="h-6 w-3/4 mb-4" />
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-5/6" />
-                </Card>
-              ))}
-            </div>
-          ) : (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {announcements.map((announcement, index) => (
-                <motion.div
-                  key={announcement.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                >
-                  <AnnouncementCard announcement={announcement} />
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-
       {/* Upcoming Events Section */}
-      <section className="py-16 bg-muted/30">
+      <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full mb-4">
@@ -124,7 +83,7 @@ const EventsPage = () => {
             </p>
           </div>
 
-          {loading ? (
+          {isLoading ? (
             <div className="grid gap-8 md:grid-cols-2">
               {[...Array(4)].map((_, i) => (
                 <Card key={i} className="p-6">
@@ -134,6 +93,11 @@ const EventsPage = () => {
                   <Skeleton className="h-10 w-32" />
                 </Card>
               ))}
+            </div>
+          ) : upcomingEvents.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <p className="text-lg">No upcoming events at the moment. Check back soon!</p>
             </div>
           ) : (
             <div className="grid gap-8 md:grid-cols-2">
